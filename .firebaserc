@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "calculadora-becas": {
+      "hosting": {
+        "calculadora": [
+          "calculadora-becas"
+        ]
+      }
+    }
+  }
+}

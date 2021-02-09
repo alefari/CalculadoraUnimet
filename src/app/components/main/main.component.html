@@ -1,0 +1,305 @@
+<div class="container">
+  <div class="row gy-4 justify-content-md-center">
+
+    <!--#################################################     PASO 1     #####################################################-->
+    <div class="col-lg-6">
+        <div class="card shadow rounded-0 border-0">
+          <h4 class="card-header bg-secondary text-white rounded-0 border-0 shadow-sm">Paso 1</h4>
+          <div class="card-body rounded-0 border-0">
+            <form (ngSubmit)="onSubmit1()" #f="ngForm">
+              <!-- <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Marca para postgrado</label>
+              </div> -->
+
+              <div *ngIf="!paramsLoaded" class="text-center">
+                <div class="spinner-grow text-secondary" style="width: 3rem; height: 3rem;" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              <table *ngIf="paramsLoaded" class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Matrícula Actual</th>
+                    <th scope="col">Costo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td scope="row">Asignatura</td>
+                    <td>$ {{parametros.asignaturaPre | currency : 'VES' : "" : '1.2-2' : 'es'}}</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Inscripción</td>
+                    <td>$ {{parametros.inscripcionPre | currency : 'VES' : "" : '1.2-2' : 'es'}}</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Seguro Estudiantil</td>
+                    <td>$ {{parametros.seguroPre | currency : 'VES' : "" : '1.2-2' : 'es'}}</td>
+                  </tr>
+                  <tr class="table-info">
+                    <th scope="row">Tasa de cambio (BCV)</th>
+                    <th>{{parametros.tasa | currency : 'VES' : "" : '1.2-2' : 'es'}} Bs/$</th>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p *ngIf="paramsLoaded" class="text-end">&#9888; Tasa actualizada hace X horas</p>
+
+              <hr>
+
+              <h4 class="mb-3">Ingresa los Datos:</h4>
+
+              <div class="form-floating mb-3">
+                <select
+                  id="selectAsignaturas"
+                  class="form-select"
+                  name="numeroMaterias"
+                  [(ngModel)]='datosForm.materiasInscritas'
+                  [disabled]="completadoPaso1"
+                  required>
+                  <option value=1>1</option><option value=2>2</option>
+                  <option value=3>3</option><option value=4>4</option>
+                  <option value=5>5</option><option value=6>6</option>
+                  <option value=7>7</option>
+                </select>
+                <label for="selectAsignaturas">Asignaturas inscritas:</label>
+                <small id="ejemploCosto" class="form-text text-muted">
+                  <strong>No</strong> incluir Servicio Comunitario ni Selecciones Deportivas/Culturales.
+                </small>
+              </div>
+
+              <div class="form-check mb-2">
+                <input [(ngModel)]="datosForm.reinscritas" name="reinscritas" class="form-check-input" type="checkbox" value="true" id="matReinscritas" [disabled]="completadoPaso1">
+                <label class="form-check-label" for="matReinscritas">
+                    Marca si posees asignaturas reinscritas.
+                    <small class="text-muted">(Que inscribes de nuevo por haber retirado o reprobado teniendo el beneficio activo)</small>
+                </label>
+              </div>
+
+              <div *ngIf="datosForm.reinscritas" class="mb-4 container">
+                <label class="mb-2" for="exampleInputEmail1">¿Cúantas de las asignaturas que seleccionaste arriba son reinscritas?</label>
+                <select
+                  class="form-select"
+                  name="materiasReinscritas"
+                  [(ngModel)]='datosForm.materiasReinscritas'
+                  [disabled]="completadoPaso1"
+                  required>
+                  <option *ngFor="let opcion of repetirNVeces(datosForm.materiasInscritas)" value='{{opcion+1}}'>{{opcion+1}}</option>
+                </select>
+              </div>
+
+            <div class="form-check">
+              <input [(ngModel)]="datosForm.primerPago" name="PrimerPago" class="form-check-input" type="checkbox" value="true" id="defaultCheck1" [disabled]="completadoPaso1">
+              <label class="form-check-label" for="defaultCheck1">
+                Marca si es tu primer pago del trimestre<small class="text-muted"> (Para incluir el costo de inscripción).</small>
+              </label>
+            </div>
+
+            <hr>
+
+            <button class="btn btn-success float-end" type="submit" [disabled]="completadoPaso1" (click)='completadoPaso1 = true'>Avanzar</button>
+            <!-- [disabled]='completadoPaso1 || !f.valid || numBecaElegida[0] == "0"' -->
+          </form>
+          </div>
+        </div>
+    </div>
+
+    <!--#################################################     PASO 2     #####################################################-->
+    <div *ngIf="completadoPaso1" class="col-lg-6">
+
+      <div class="card shadow rounded-0 border-0">
+        <h4 class="card-header bg-secondary text-white rounded-0 border-0 shadow-sm">Paso 2</h4>
+        <div class="card-body rounded-0 border-0">
+
+          <h5 class="card-title">Selecciona la beca o beneficio socioeconómico que posees:</h5>
+          <p class="card-text font-italic">Si posees mas de una, selecciona todas las que correspondan.</p>
+
+          <div class="mb-2">
+            <form #f2="ngForm">
+            <div class="row mb-3">
+              <div class="col-7">
+                <select
+                  class="form-select"
+                  name="beca1"
+                  [(ngModel)]="numBecaElegida[0]"
+                  required
+                  [disabled]="completadoPaso2"
+                  #beca1="ngModel"
+                  (change)='selectBeca(0)'>
+                  <option value="0">Ninguna</option>
+                  <ng-container *ngFor="let beca of becas">
+                    <option *ngIf='beca.habilitado && beca.id != numBecaElegida[1] && beca.id != numBecaElegida[2]' value="{{beca.id}}">{{beca.nombre}}</option>
+                  </ng-container>
+                </select>
+                <small *ngIf="beca1.value == '0' && beca1.touched" class="help-block">Por favor elige al menos una Beca.</small>
+              </div>
+
+              <div class="col-5">
+                <div *ngIf="beca1.value != '0'">
+                  <select
+                    class="form-select"
+                    name="porcentaje1"
+                    [(ngModel)]='porcentajesElegidos[0]'
+                    [disabled]="completadoPaso2"
+                    required
+                    #porcentaje1="ngModel">
+                    <option *ngFor="let porcentaje of porcentajesMostrar[0]" value="{{porcentaje}}">
+                      {{porcentaje}}<span *ngIf='!porcentaje.includes("UC")'>%</span>
+                    </option>
+                  </select>
+                  <small *ngIf="!porcentaje1.valid && porcentaje1.touched && !completadoPaso2" class="help-block">Por favor elige el porcentaje de tu beca.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-3" *ngIf="numBecaElegida[0] != '0'">
+              <div class="col-7">
+                <select
+                  class="form-select"
+                  name="beca2"
+                  [(ngModel)]="numBecaElegida[1]"
+                  required
+                  [disabled]="completadoPaso2"
+                  #beca2="ngModel"
+                  (change)='selectBeca(1)'>
+                  <option value="0">Ninguna</option>
+                  <ng-container *ngFor="let beca of becas">
+                    <option *ngIf='beca.habilitado && beca.id != numBecaElegida[0] && beca.id != numBecaElegida[2]' value="{{beca.id}}">{{beca.nombre}}</option>
+                  </ng-container>
+                </select>
+              </div>
+
+              <div class="col-5">
+                <div *ngIf="beca2.value != '0'">
+                  <select
+                    class="form-select"
+                    name="porcentaje2"
+                    [(ngModel)]='porcentajesElegidos[1]'
+                    [disabled]="completadoPaso2"
+                    required
+                    #porcentaje2="ngModel">
+                    <option *ngFor="let porcentaje of porcentajesMostrar[1]" value="{{porcentaje}}">
+                      {{porcentaje}}<span *ngIf='!porcentaje.includes("UC")'>%</span>
+                    </option>
+                  </select>
+                  <small *ngIf="!porcentaje2.valid && porcentaje2.touched && !completadoPaso2" class="help-block">Por favor elige el porcentaje de tu beca.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-3" *ngIf="numBecaElegida[1] != '0'">
+              <div class="col-7">
+                <select
+                  class="form-select"
+                  name="beca3"
+                  [(ngModel)]="numBecaElegida[2]"
+                  required
+                  [disabled]="completadoPaso2"
+                  #beca3="ngModel"
+                  (change)='selectBeca(2)'>
+                  <option value="0">Ninguna</option>
+                  <ng-container *ngFor="let beca of becas">
+                    <option *ngIf='beca.habilitado && beca.id != numBecaElegida[1] && beca.id != numBecaElegida[0]' value="{{beca.id}}">{{beca.nombre}}</option>
+                  </ng-container>
+                </select>
+              </div>
+
+              <div class="col-5">
+                <div *ngIf="beca1.value != '0'">
+                  <select
+                    class="form-select"
+                    name="porcentaje"
+                    [(ngModel)]='porcentajesElegidos[2]'
+                    [disabled]="completadoPaso2"
+                    required
+                    #porcentaje3="ngModel">
+                    <option *ngFor="let porcentaje of porcentajesMostrar[2]" value="{{porcentaje}}">
+                      {{porcentaje}}<span *ngIf='!porcentaje.includes("UC")'>%</span>
+                    </option>
+                  </select>
+                  <small *ngIf="!porcentaje3.valid && porcentaje3.touched && !completadoPaso2" class="help-block">Por favor elige el porcentaje de tu beca.</small>
+                </div>
+              </div>
+            </div>
+          </form>
+          <hr>
+          <button href="#" class="btn btn-secondary" (click)='regresar2a1()' [disabled]="completadoPaso2">Regresar</button>
+          <button href="#" class="btn btn-success float-end" (click)='onSubmit2()' [disabled]="completadoPaso2">Finalizar</button>
+        </div>
+      </div>
+
+    </div>
+    </div>
+
+    <!--###############################################     RESULTADOS     ####################################################-->
+    <div *ngIf="completadoPaso2" class="col-lg-6">
+      <div class="card shadow rounded-0 border-0">
+        <h4 class="card-header bg-success text-white rounded-0">Resultados</h4>
+        <div class="card-body">
+          <h5 class="card-title">Resumen</h5>
+          <table *ngIf="paramsLoaded" class="table table-sm">
+            <thead>
+              <tr>
+                <th scope="col">Costo</th>
+                <th scope="col">$</th>
+                <th scope="col">Bs.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row">Asignatura</td>
+                <td>{{parametros.asignaturaPre | currency : 'VES' : "" : '1.2-2' : 'es'}}</td>
+                <td>{{parametros.asignaturaPre*parametros.tasa | currency : 'VES' : "" : '1.2-2' : 'es'}}</td>
+              </tr>
+              <tr *ngIf="datosForm.primerPago">
+                <td scope="row">Inscripción</td>
+                <td>{{parametros.inscripcionPre | currency : 'VES' : "" : '1.2-2' : 'es'}}</td>
+                <td>{{parametros.inscripcionPre*parametros.tasa | currency : 'VES' : "" : '1.2-2' : 'es'}}</td>
+              </tr>
+              <tr>
+                <td scope="row">Seguro Estudiantil</td>
+                <td>{{parametros.seguroPre | currency : 'VES' : "" : '1.2-2' : 'es'}}</td>
+                <td>{{parametros.seguroPre*parametros.tasa | currency : 'VES' : "" : '1.2-2' : 'es'}}</td>
+              </tr>
+              <tr class="table-info">
+                <th scope="row">Tasa de cambio (BCV)</th>
+                <th colspan="2">{{parametros.tasa | currency : 'VES' : "" : '1.2-2' : 'es'}} Bs/$</th>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            <b>{{ datosForm.materiasInscritas }}</b> asignaturas inscritas,
+            <span *ngIf="datosForm.reinscritas"> de las cuales <b>{{ datosForm.materiasReinscritas }}</b> es/son reinscrita(s),<br></span>
+            <br> Total a pagar sin descuentos:<br><b>Bs. {{ costoBruto*parametros.tasa | currency : 'VES' : "" : '1.2-2' : 'es'}}</b>
+            o (${{ costoBruto | currency : 'VES' : "" : '1.2-2' : 'es'}})
+          </p>
+          <hr>
+          <p>Luego, aplicando los descuentos:<br>
+            <span *ngFor="let beca of becasListas">
+              <b>{{ beca.nombre }} - {{ beca.porcentajes[0] }}<span *ngIf='!beca.porcentajes[0].includes("UC")'>%</span> </b><br>
+            </span>
+          </p>
+          <p>Total a pagar con descuentos aplicados:</p>
+          <div class="row">
+            <div class="col">
+              <div class="container text-center">
+                <h5 class="alert alert-success"><b>Bs. {{ costoNeto*parametros.tasa  | currency : 'VES' : "" : '1.2-2' : 'es'}}</b></h5>
+              </div>
+            </div>
+            <div class="col">
+              <div class="container text-center">
+                <h5 class="alert alert-primary"><b>$ {{ costoNeto  | currency : 'VES' : "" : '1.2-2' : 'es'}}</b></h5>
+              </div>
+            </div>
+          </div>
+          <small id="ejemploCosto" class="form-text text-muted">Puedes tomar una captura de la tarjeta Resultados, para anexarla
+            al correo de pago.
+          </small>
+          <hr>
+          <button class="btn btn-secondary float-left" >Regresar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
