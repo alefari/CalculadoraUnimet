@@ -1,0 +1,181 @@
+<div class="container">
+  <ul class="list-group rounded-0 shadow">
+    <li class="list-group-item bg-secondary text-white">
+      <h3>Programas habilitados</h3>
+      <button type="button" class="btn btn-success shadow btn-sm rounded-0 float-end" data-toggle="modal" data-target="#modalDetalles"> <fa-icon [icon]="faPlus"></fa-icon> Agregar Programa </button>
+    </li>
+    <div *ngFor="let beca of becas">
+      <li
+        *ngIf="beca.habilitado" class="list-group-item"><span [ngClass]="{'bold': detalles == beca.id}">{{ beca.nombre }}</span>
+        <div class="btn-group float-end">
+          <button type="button" class="btn btn-info btn-sm rounded-0" (click)='detallesBeca(beca.id)'> <fa-icon [icon]="faInfo"></fa-icon><span *ngIf="detalles == beca.id"> Menos</span> Detalles </button>
+          <button type="button" class="btn btn-warning btn-sm rounded-0" (click)='onInhabilitar(beca)'> <fa-icon [icon]="faEyeSlash"></fa-icon> Inhabilitar </button>
+        </div>
+        <div *ngIf="detalles == beca.id">
+          <p>Porcentajes: <span *ngFor="let porcentaje of beca.porcentajes"> ,{{ porcentaje }}%</span><br>
+            <strong *ngIf="beca.aplicaInscripcion; else elseBlock">SI </strong>
+            <ng-template #elseBlock><strong>NO </strong></ng-template>
+            Aplica al costo de inscripción<br>
+            <strong *ngIf="beca.aplicaSeguro; else elseBlock">SI </strong>
+            <ng-template #elseBlock><strong>NO </strong></ng-template>
+            Aplica al costo del seguro<br>
+            <span *ngIf="beca.matMax">Posee límite de asignaturas<strong> ({{beca.matMax}})</strong></span>
+          </p>
+        </div>
+      </li>
+    </div>
+  </ul>
+</div>
+<hr>
+<div class="container">
+  <ul class="list-group rounded-0 shadow">
+    <li class="list-group-item bg-secondary text-white">
+      <h3>Programas Inhabilitados</h3>
+    </li>
+    <div *ngFor="let beca of becas">
+      <li
+        class="list-group-item"
+        *ngIf="beca.habilitado != true"><fa-icon [icon]="faEyeSlash"></fa-icon> <strong> {{ beca.nombre }}</strong>
+        <div class="btn-group float-end">
+          <button type="button" class="btn btn-info btn-sm rounded-0" (click)='detallesBeca(beca.id)'> <fa-icon [icon]="faInfo"></fa-icon><span *ngIf="detalles == beca.id"> Menos</span> Detalles </button>
+          <button type="button" class="btn btn-secondary btn-sm rounded-0" (click)='abrirModalEdicion(beca.id)' data-toggle="modal" data-target="#modalEditar"> <fa-icon [icon]="faEdit"></fa-icon> Editar </button>
+          <button type="button" class="btn btn-success btn-sm rounded-0" (click)='onHabilitar(beca)'> <fa-icon [icon]="faEye"></fa-icon> Habilitar </button>
+          <button type="button" class="btn btn-danger btn-sm rounded-0" (click)="onEliminar(beca)" > <fa-icon [icon]="faTrashAlt"></fa-icon> Eliminar </button>
+        </div>
+        <div *ngIf="detalles == beca.id">
+          <p>Porcentajes: <span *ngFor="let porcentaje of beca.porcentajes"> ,{{ porcentaje }}%</span><br>
+            <strong *ngIf="beca.aplicaInscripcion; else elseBlock">SI </strong>
+            <ng-template #elseBlock><strong>NO </strong></ng-template>
+            Aplica al costo de inscripción<br>
+            <strong *ngIf="beca.aplicaSeguro; else elseBlock">SI </strong>
+            <ng-template #elseBlock><strong>NO </strong></ng-template>
+            Aplica al costo del seguro<br>
+            <span *ngIf="beca.matMax">Posee límite de asignaturas<strong> ({{beca.matMax}})</strong></span>
+          </p>
+        </div>
+      </li>
+    </div>
+  </ul>
+</div>
+<hr>
+
+<hr>
+
+<!--                                 MODAL EDICION DE BECA                                -->
+
+
+<div class="modal fade" id="modalDetalles" tabindex="-1" role="dialog" aria-hidden="true">
+  <app-add></app-add>
+</div>
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered rounded-0">
+    <div class="modal-content rounded-0">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar un programa</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form #a="ngForm">
+      <div class="modal-body">
+        <div class="form-group">
+          <input
+          class="form-control"
+          type="text"
+          [ngModel]='becaEditar.nombre'
+          name="nombre">
+        </div>
+        <div class="form-group">
+
+          <label class="form-check-label" for="defaultCheck1">
+            Porcentajes
+          </label>
+
+            <div class="row">
+            <div class="col-sm-3" *ngFor="let opcion of becaEditar.porcentajes; let i = index">
+              <div class="input-group input-group-sm">
+                <input
+                class="form-control"
+                type="text"
+                [name]='"porcentaje"+i'
+                [(ngModel)]='becaEditar.porcentajes[i]'>
+                <div class="input-group-append">
+                  <span class="input-group-text" id="basic-addon1">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <button type="button" class="btn btn-info btn-sm rounded-0" (click)='agregarCampo()'>  Agregar</button>
+                <button type="button" class="btn btn-danger btn-sm rounded-0" (click)='eliminarCampo()'>  Eliminar</button>
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          <hr>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check">
+            <input
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="defaultCheck1"
+            [(ngModel)]='becaEditar.aplicaInscripcion'
+            name="aplicaInscripcion">
+            <label class="form-check-label" for="defaultCheck1">
+              Aplica a la Incripción
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck2"
+            [(ngModel)]='becaEditar.aplicaSeguro'
+            name="aplicaSeguro">
+            <label class="form-check-label" for="defaultCheck2">
+              Aplica al Seguro
+            </label>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="defaultCheck2"
+                [(ngModel)]='becaEditar.matMax'
+                  name="poseeLimite">
+                <label class="form-check-label" for="defaultCheck2">
+                  Posee límite de Materias
+                </label>
+              </div>
+            </div>
+            <div class="col">
+              <select
+                class="form-control form-control-sm float-right"
+                id="exampleFormControlSelect1"
+                [(ngModel)]='becaEditar.matMax'
+                name="matMax">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger rounded-0" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success rounded-0" (click)='editarBeca()' data-dismiss="modal">Guardar Cambios</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
