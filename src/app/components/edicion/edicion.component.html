@@ -1,0 +1,91 @@
+<div class="container">
+  <button type="button" class="btn rounded-0 btn-success mb-2"
+    data-bs-toggle="modal" data-bs-target="#modalParametros">
+    <fa-icon [icon]="faClipboardList"></fa-icon> Modificar parámetros
+  </button>
+  <ul class="list-group rounded-0 shadow">
+    <li class="list-group-item bg-secondary text-white">
+      <div class="row">
+        <div class="col">
+          <h3>Programas habilitados</h3>
+        </div>
+        <div class="col">
+          <button type="button" class="inline btn btn-primary shadow rounded-0 float-end" data-bs-toggle="modal" data-bs-target="#modalAgregar"> <fa-icon [icon]="faPlus"></fa-icon> Agregar Programa </button>
+        </div>
+      </div>
+    </li>
+    <div *ngFor="let beca of becas">
+      <li
+        *ngIf="beca.habilitado" class="list-group-item"><span [ngClass]="{'bold': detalles == beca.id}">{{ beca.nombre }}</span>
+        <div class="btn-group float-end">
+          <button type="button" class="btn btn-info btn-sm rounded-0" (click)='detallesBeca(beca.id)'> <fa-icon [icon]="faInfo"></fa-icon><span *ngIf="detalles == beca.id"> Menos</span> Detalles </button>
+          <button type="button" class="btn btn-warning btn-sm rounded-0" (click)='onInhabilitar(beca)'> <fa-icon [icon]="faEyeSlash"></fa-icon> Inhabilitar </button>
+        </div>
+        <div *ngIf="detalles == beca.id">
+          <p>Porcentajes: <span *ngFor="let porcentaje of beca.porcentajes"> ,{{ porcentaje }}%</span><br>
+            <strong *ngIf="beca.aplicaInscripcion; else elseBlock">SI </strong>
+            <ng-template #elseBlock><strong>NO </strong></ng-template>
+            Aplica al costo de inscripción<br>
+            <strong *ngIf="beca.aplicaSeguro; else elseBlock">SI </strong>
+            <ng-template #elseBlock><strong>NO </strong></ng-template>
+            Aplica al costo del seguro<br>
+            <span *ngIf="beca.matMax">Posee límite de asignaturas<strong> ({{beca.matMax}})</strong></span>
+          </p>
+        </div>
+      </li>
+    </div>
+  </ul>
+</div>
+<hr>
+<div class="container">
+  <ul class="list-group rounded-0 shadow">
+    <li class="list-group-item bg-secondary text-white">
+      <h3>Programas Inhabilitados</h3>
+    </li>
+    <div *ngFor="let beca of becas">
+      <li
+        class="list-group-item"
+        *ngIf="beca.habilitado != true"><fa-icon [icon]="faEyeSlash"></fa-icon> <strong> {{ beca.nombre }}</strong>
+        <div class="btn-group float-end">
+          <button type="button" class="btn btn-info btn-sm rounded-0" (click)='detallesBeca(beca.id)'> <fa-icon [icon]="faInfo"></fa-icon><span *ngIf="detalles == beca.id"> Menos</span> Detalles </button>
+          <button type="button" class="btn btn-secondary btn-sm rounded-0" (click)='abrirModalEdicion(beca)' data-bs-toggle="modal" data-bs-target="#modalEditar"> <fa-icon [icon]="faEdit"></fa-icon> Editar </button>
+          <button type="button" class="btn btn-success btn-sm rounded-0" (click)='onHabilitar(beca)'> <fa-icon [icon]="faEye"></fa-icon> Habilitar </button>
+          <button type="button" class="btn btn-danger btn-sm rounded-0" (click)="onEliminar(beca)" > <fa-icon [icon]="faTrashAlt"></fa-icon> Eliminar </button>
+        </div>
+        <div *ngIf="detalles == beca.id">
+          <p>Porcentajes: <span *ngFor="let porcentaje of beca.porcentajes"> ,{{ porcentaje }}%</span><br>
+            <strong *ngIf="beca.aplicaInscripcion; else elseBlock">SI </strong>
+            <ng-template #elseBlock><strong>NO </strong></ng-template>
+            Aplica al costo de inscripción<br>
+            <strong *ngIf="beca.aplicaSeguro; else elseBlock">SI </strong>
+            <ng-template #elseBlock><strong>NO </strong></ng-template>
+            Aplica al costo del seguro<br>
+            <span *ngIf="beca.matMax">Posee límite de asignaturas<strong> ({{beca.matMax}})</strong></span>
+          </p>
+        </div>
+      </li>
+    </div>
+  </ul>
+</div>
+<hr>
+
+<hr>
+
+<!--                                 MODAL AGREGAR BECA                                -->
+
+<div class="modal fade" id="modalAgregar" tabindex="-1" aria-hidden="true">
+  <app-add></app-add>
+</div>
+
+<!--                                 MODAL EDICION DE BECA                                -->
+
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+  <app-editar [becaEditar]='becaEditar'></app-editar>
+</div>
+
+<!--                              MODAL EDICION DE PARAMETROS                              -->
+
+<div class="modal fade" id="modalParametros" tabindex="-1" aria-hidden="true">
+  <app-parametros></app-parametros>
+</div>
+

@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { BecasService } from '../services/becas.service';
-import { Beca } from '../models/beca.model';
-import { faEdit, faTrashAlt, faEyeSlash, faInfo, faPlus, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faEyeSlash, faInfo, faPlus, faEye, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import { Form, NgForm } from '@angular/forms';
+import { Beca } from 'src/app/models/beca.model';
+import { BecasService } from 'src/app/services/becas.service';
 
 @Component({
   selector: 'app-edicion',
@@ -18,6 +18,7 @@ export class EdicionComponent implements OnInit {
   faEye = faEye;
   faInfo = faInfo;
   faPlus = faPlus;
+  faClipboardList = faClipboardList;
   detalles: string = "";
   cantidadPorcentajes: number = null;
 
@@ -44,14 +45,12 @@ export class EdicionComponent implements OnInit {
   }
 
   onInhabilitar(beca: Beca) {
-    let becaInhabilitada = beca;
-    becaInhabilitada.habilitado = false;
-    this.servicioBecas.editarBeca(becaInhabilitada);
+    beca.habilitado = false;
+    this.servicioBecas.editarBeca(beca);
   }
   onHabilitar(beca: Beca) {
-    let becaHabilitada = beca;
-    becaHabilitada.habilitado = true;
-    this.servicioBecas.editarBeca(becaHabilitada);
+    beca.habilitado = true;
+    this.servicioBecas.editarBeca(beca);
   }
 
   detallesBeca(idBeca: string) {
@@ -63,33 +62,33 @@ export class EdicionComponent implements OnInit {
     }
   }
 
-  abrirModalEdicion(idBeca: string) {
-    this.becaEditar = this.becas.find(beca => beca.id === idBeca);
+  abrirModalEdicion(beca: Beca) {
+    this.becaEditar = Object.assign({}, beca);
   }
 
-  editarBeca() {
-    this.becaEditar.nombre = this.form.value.nombre;
-    this.servicioBecas.editarBeca(this.becaEditar);
+  // editarBeca() {
+  //   this.becaEditar.nombre = this.form.value.nombre;
+  //   this.servicioBecas.editarBeca(this.becaEditar);
 
-    this.becaEditar = {
-      id: null,
-      nombre: null,
-      porcentajes: null,
-      aplicaSeguro: false,
-      aplicaInscripcion: false,
-      matMax: null
-    }
-  }
+  //   this.becaEditar = {
+  //     id: null,
+  //     nombre: null,
+  //     porcentajes: null,
+  //     aplicaSeguro: false,
+  //     aplicaInscripcion: false,
+  //     matMax: null
+  //   }
+  // }
 
-  agregarCampo() {
-    this.becaEditar.porcentajes.push("0");
-  }
-  eliminarCampo() {
-    this.becaEditar.porcentajes.pop();
-  }
+  // agregarCampo() {
+  //   this.becaEditar.porcentajes.push("0");
+  // }
+  // eliminarCampo() {
+  //   this.becaEditar.porcentajes.pop();
+  // }
 
-  repetirNVeces(n: any) {
-    return[...Array(n).keys()];
-  }
+  // repetirNVeces(n: any) {
+  //   return[...Array(n).keys()];
+  // }
 
 }

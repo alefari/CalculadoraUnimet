@@ -15,10 +15,11 @@ import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
 import { FormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import { FooterComponent } from './components/footer/footer.component';
-import { EdicionComponent } from './edicion/edicion.component';
-import { AddComponent } from './edicion/add/add.component';
-import { EditarComponent } from './edicion/editar/editar.component';
+import { AddComponent } from './components/edicion/add/add.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { EdicionComponent } from './components/edicion/edicion.component';
+import { EditarComponent } from './components/edicion/editar/editar.component';
+import { ParametrosComponent } from './components/edicion/parametros/parametros.component';
 
 registerLocaleData(localeEs);
 
@@ -30,7 +31,8 @@ registerLocaleData(localeEs);
     FooterComponent,
     EdicionComponent,
     AddComponent,
-    EditarComponent
+    EditarComponent,
+    ParametrosComponent,
   ],
   imports: [
     BrowserModule,

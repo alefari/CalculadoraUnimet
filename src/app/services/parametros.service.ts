@@ -7,8 +7,8 @@ export interface Params { asignaturaPre: number,
                           inscripcionPre: number,
                           seguroPre: number,
                           tasa: number,
-                          fechaIngreso: Date,
-                          fechaVencimiento: Date,
+                          fechaIngreso: number,
+                          fechaVencimiento: number,
                         }
 
 @Injectable({

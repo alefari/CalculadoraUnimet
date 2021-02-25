@@ -16,6 +16,8 @@ export class MainComponent implements OnInit {
   becasLoaded = false;
 
   parametros:Params;
+  vigenciaTasa:Date;
+  tasaValida = false;
   paramsLoaded = false;
 
   numBecaElegida: string[] = ['0', '0', '0'];
@@ -50,6 +52,8 @@ export class MainComponent implements OnInit {
     })
     this.servicioParametros.obtenerParametros().subscribe(params => {
       this.parametros = params
+      this.vigenciaTasa = new Date(this.parametros.fechaVencimiento);
+      this.tasaValida = this.parametros.fechaVencimiento > new Date().getTime() ? true : false;
       this.paramsLoaded = true;
     })
   }

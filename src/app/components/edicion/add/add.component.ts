@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { BecasService } from '../../services/becas.service';
-import { Beca } from '../../models/beca.model';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { NgForm } from '@angular/forms';
+import { BecasService } from 'src/app/services/becas.service';
+import { Beca } from 'src/app/models/beca.model';
 
 @Component({
   selector: 'app-add',
@@ -11,16 +11,15 @@ import { NgForm } from '@angular/forms';
 })
 export class AddComponent implements OnInit {
   @ViewChild('a') form: NgForm;
-  porcentajes: string[] = [];
-  faPlus = faPlus;
+  porcentajes: string[] = ['0'];
   cantidadPorcentajes = 1;
+  faPlus = faPlus;
+  faMinus = faMinus;
   nuevaBeca: Beca;
 
   constructor(private becaService: BecasService) { }
 
-  ngOnInit(): void {
-    this.cantidadPorcentajes = 1;
-  }
+  ngOnInit(): void { }
 
   onSubmit() {
     this.nuevaBeca = {
@@ -37,15 +36,28 @@ export class AddComponent implements OnInit {
     }
 
     this.becaService.agregarBeca(this.nuevaBeca);
-    this.porcentajes = [];
+
+    this.onSalir();
+  }
+
+  agregarCampo() {
+    this.cantidadPorcentajes++;
+    this.porcentajes.push('0');
+  }
+  eliminarCampo() {
+    this.cantidadPorcentajes--;
+    this.porcentajes.pop();
   }
 
   repetirNVeces(n: any) {
     return[...Array(n).keys()];
   }
 
-  agregarCampo() {
-    this.cantidadPorcentajes++;
+  onSalir() {
+    this.form.reset();
+    this.cantidadPorcentajes = 1;
+    this.porcentajes = ['0']
+    this.nuevaBeca = null;
   }
 
 }

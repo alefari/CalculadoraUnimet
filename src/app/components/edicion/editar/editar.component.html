@@ -1,0 +1,98 @@
+<div class="modal-dialog modal-dialog-centered rounded-0">
+  <div class="modal-content rounded-0">
+    <div class="modal-header bg-secondary rounded-0">
+      <h5 class="modal-title text-white" id="exampleModalLabel">Editar programa</h5>
+      <button (click)='onSalir()' type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <form (ngSubmit)="onSubmit()" #a="ngForm">
+    <div class="modal-body">
+      <div class="form-floating mb-3">
+        <input [(ngModel)]='becaEditable.nombre' name='nombre' type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+        <label for="floatingInput">Nombre del programa</label>
+      </div>
+      <div class="mb-3">
+        <p class="form-check-label mb-1" for="defaultCheck1">
+          Porcentajes
+        </p>
+        <div class="row gy-2 mb-3">
+          <div class="col-sm-3" *ngFor="let porcentaje of repetirNVeces(cantidadPorcentajes); let i = index">
+            <div class="input-group input-group-sm">
+              <input
+                *ngIf="becaEditable.porcentajes"
+                class="form-control"
+                type="text"
+                [(ngModel)]="becaEditable.porcentajes[i]"
+                [name]='"porcentaje"+i'>
+              <span class="input-group-text" id="basic-addon1">%</span>
+            </div>
+          </div>
+
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <button type="button" class="btn btn-info btn-sm rounded-0 me-2" (click)='agregarCampo()'> <fa-icon [icon]="faPlus"></fa-icon> Agregar campo</button>
+            <button *ngIf="cantidadPorcentajes > 1" type="button" class="btn btn-secondary btn-sm rounded-0" (click)='eliminarCampo()'> <fa-icon [icon]="faMinus"></fa-icon> Eliminar campo</button>
+          </div>
+        </div>
+        <hr>
+      </div>
+        <div class="form-group">
+          <div class="form-check">
+            <input
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="defaultCheck1"
+            [(ngModel)]='becaEditable.aplicaInscripcion'
+            name="aplicaInscripcion">
+            <label class="form-check-label" for="defaultCheck1">
+              Aplica a la Incripción
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck2"
+            [(ngModel)]='becaEditable.aplicaSeguro'
+            name="aplicaSeguro">
+            <label class="form-check-label" for="defaultCheck2">
+              Aplica al Seguro
+            </label>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="defaultCheck2"
+                [(ngModel)]='poseeLimiteMat'
+                #poseeLimite='ngModel'
+                name="poseeLimite">
+              <label class="form-check-label" for="defaultCheck2">
+                Posee límite de Materias
+              </label>
+            </div>
+          </div>
+          <div class="col">
+  <!-- <label for="exampleFormControlSelect1">Example select</label> -->
+            <select
+              *ngIf="poseeLimite.value"
+              class="form-select form-select-sm float-right"
+              id="exampleFormControlSelect1"
+              [(ngModel)]="becaEditar.matMax"
+              name="matMax">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+            </select>
+          </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="float-start btn btn-secondary rounded-0" (click)='onSalir()' data-bs-dismiss="modal">Cancelar</button>
+      <button type="button" class="float-end btn btn-primary rounded-0" (click)='onSubmit()' data-bs-dismiss="modal">Aceptar modificaiones</button>
+    </div>
+  </form>
+  </div>
+</div>

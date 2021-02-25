@@ -17,7 +17,13 @@
                   <span class="visually-hidden">Loading...</span>
                 </div>
               </div>
-              <table *ngIf="paramsLoaded" class="table table-sm">
+              <div *ngIf="paramsLoaded && !tasaValida" class="text-center">
+                <div class="alert alert-danger" role="alert">
+                  Disculpa, actualmente la calculadora no posee la tasa de cambio actualizada, por favor ingresa mas tarde.
+                </div>
+              </div>
+
+              <table *ngIf="paramsLoaded && tasaValida" class="table table-sm">
                 <thead>
                   <tr>
                     <th scope="col">Matrícula Actual</th>
@@ -44,7 +50,7 @@
                 </tbody>
               </table>
 
-              <p *ngIf="paramsLoaded" class="text-end">&#9888; Tasa actualizada hace X horas</p>
+              <p *ngIf="paramsLoaded" class="text-end">{{tasaValida ? '&#9989;' : '&#9888;'}}  Tasa vigente hasta {{vigenciaTasa | date:'d/M/YY - hh:mm aaa'}}</p>
 
               <hr>
 
@@ -56,7 +62,7 @@
                   class="form-select"
                   name="numeroMaterias"
                   [(ngModel)]='datosForm.materiasInscritas'
-                  [disabled]="completadoPaso1"
+                  [disabled]="completadoPaso1 || !tasaValida"
                   required>
                   <option value=1>1</option><option value=2>2</option>
                   <option value=3>3</option><option value=4>4</option>
@@ -70,7 +76,10 @@
               </div>
 
               <div class="form-check mb-2">
-                <input [(ngModel)]="datosForm.reinscritas" name="reinscritas" class="form-check-input" type="checkbox" value="true" id="matReinscritas" [disabled]="completadoPaso1">
+                <input [(ngModel)]="datosForm.reinscritas"
+                  name="reinscritas" class="form-check-input"
+                  type="checkbox" value="true" id="matReinscritas"
+                  [disabled]="completadoPaso1 || !tasaValida">
                 <label class="form-check-label" for="matReinscritas">
                     Marca si posees asignaturas reinscritas.
                     <small class="text-muted">(Que inscribes de nuevo por haber retirado o reprobado teniendo el beneficio activo)</small>
@@ -83,14 +92,16 @@
                   class="form-select"
                   name="materiasReinscritas"
                   [(ngModel)]='datosForm.materiasReinscritas'
-                  [disabled]="completadoPaso1"
+                  [disabled]="completadoPaso1 || !tasaValida"
                   required>
                   <option *ngFor="let opcion of repetirNVeces(datosForm.materiasInscritas)" value='{{opcion+1}}'>{{opcion+1}}</option>
                 </select>
               </div>
 
             <div class="form-check">
-              <input [(ngModel)]="datosForm.primerPago" name="PrimerPago" class="form-check-input" type="checkbox" value="true" id="defaultCheck1" [disabled]="completadoPaso1">
+              <input [(ngModel)]="datosForm.primerPago" name="PrimerPago"
+                class="form-check-input" type="checkbox" value="true"
+                id="defaultCheck1" [disabled]="completadoPaso1 || !tasaValida">
               <label class="form-check-label" for="defaultCheck1">
                 Marca si es tu primer pago del trimestre<small class="text-muted"> (Para incluir el costo de inscripción).</small>
               </label>
@@ -98,7 +109,7 @@
 
             <hr>
 
-            <button class="btn btn-success float-end" type="submit" [disabled]="completadoPaso1" (click)='completadoPaso1 = true'>Avanzar</button>
+            <button class="btn btn-success float-end" type="submit" [disabled]="completadoPaso1 || !tasaValida" (click)='completadoPaso1 = true'>Avanzar</button>
             <!-- [disabled]='completadoPaso1 || !f.valid || numBecaElegida[0] == "0"' -->
           </form>
           </div>
