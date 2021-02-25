@@ -1,16 +1,20 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AdminGuard } from './admin.guard';
-import { EdicionComponent } from './components/edicion/edicion.component';
 import { MainComponent } from './components/main/main.component';
 
 const routes: Routes = [
   { path: '', component: MainComponent },
-  { path: 'admin', component: EdicionComponent, canActivate: [AdminGuard] }
+
+  {
+    path: 'admin',
+    canActivate: [AdminGuard],
+    loadChildren: () => import("./modulo_admin/admin.module").then(m => m.AdminModule)
+  }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
