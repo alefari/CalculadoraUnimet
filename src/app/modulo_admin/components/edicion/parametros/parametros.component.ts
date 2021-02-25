@@ -14,6 +14,7 @@ export class ParametrosComponent implements OnInit {
   fechaActual:Date;
   fechaMin:string;
   fechaMax:string;
+  fechaPlaceholder:string;
 
   constructor(private servicioParametros: ParametrosService) { }
 
@@ -21,12 +22,12 @@ export class ParametrosComponent implements OnInit {
     this.servicioParametros.obtenerParametros().subscribe(params => {
       this.parametros = params;
       this.paramsLoaded = true;
-      console.log(this.parametros)
+      this.fechaActual = new Date();
+      this.fechaMin = this.fechaActual.toISOString().substring(0, 16);
+      this.fechaMax = new Date(this.fechaActual.getTime() + 31536000000).toISOString().substring(0, 16);
+      this.fechaPlaceholder = new Date(this.parametros.fechaVencimiento).toISOString().substring(0, 16);
     })
-    this.fechaActual = new Date();
 
-    this.fechaMin = this.fechaActual.toISOString().substring(0, 16);
-    this.fechaMax = new Date(this.fechaActual.getTime() + 31536000000).toISOString().substring(0, 16);
     // this.fechaMin = this.fechaActual.toISOString().split('.')[0];
 
   }
@@ -39,7 +40,6 @@ export class ParametrosComponent implements OnInit {
     this.parametros.fechaVencimiento = new Date(this.form.value.fechaVencimiento).getTime();
     this.parametros.fechaIngreso = new Date().getTime();
     this.servicioParametros.update(this.parametros);
-    console.log(this.parametros)
   }
 
 }

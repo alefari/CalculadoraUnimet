@@ -16,10 +16,10 @@
         </div>
         <div class="col">
           <div class="form-floating mb-3">
-            <input type="datetime-local" ngModel name="fechaVencimiento"
-              value="2018-07-22"  [max]="fechaMax" class="form-control" id="floatingInput" placeholder="">
+            <input type="datetime-local" [(ngModel)]='fechaPlaceholder' name="fechaVencimiento"
+              value="2018-07-22" [min]="fechaMin" [max]="fechaMax" class="form-control" id="floatingInput">
             <label for="floatingInput">Fecha de vencimiento tasa</label>
-            <!-- [min]="fechaMin" -->
+            <!--  -->
           </div>
         </div>
       </div>
