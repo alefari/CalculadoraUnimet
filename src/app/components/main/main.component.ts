@@ -3,6 +3,7 @@ import { Beca } from 'src/app/models/beca.model';
 import { BecasService } from 'src/app/services/becas.service';
 import { NgForm } from '@angular/forms';
 import { ParametrosService, Params } from 'src/app/services/parametros.service';
+import { AngularFireAnalytics } from '@angular/fire/analytics';
 
 @Component({
   selector: 'app-main',
@@ -43,7 +44,7 @@ export class MainComponent implements OnInit {
   costoBruto: number;
   costoNeto: number;
 
-  constructor(private servicioBecas: BecasService, private servicioParametros: ParametrosService) { }
+  constructor(private servicioBecas: BecasService, private servicioParametros: ParametrosService, private analytics: AngularFireAnalytics) { }
 
   ngOnInit(): void {
     this.servicioBecas.obtenerItems().subscribe(becas => {
@@ -121,8 +122,6 @@ export class MainComponent implements OnInit {
       costoParaTrabajar -= this.parametros.inscripcionPre;
     }
 
-    // becasParaTrabajar.sort((a, b) => (+b.porcentajes[0] - +a.porcentajes[0]));
-
     // SE COLOCAN LOS DESCUENTOS POR UC DE PRIMEROS
     becasParaTrabajar.forEach((beca, index) =>
       beca.porcentajes[0].includes("UC") &&
@@ -144,7 +143,7 @@ export class MainComponent implements OnInit {
         //SI APLICAN MATERIAS MAXIMAS, SE DIVIDE EL MONTO ACTUAL ENTRE EL NUMERO DE MATERIAS INSCRITAS,
         // LUEGO ESO SE MULTIPLICA POR EL NUMERO DE MATERIAS QUE CUBRE LA BECA Y SE USA ESE MONTO PARA CALCULAR EL DESCUENTO
         }else if(beca.matMax < (this.datosForm.materiasInscritas-this.datosForm.materiasReinscritas)) {
-          costoParaTrabajar -= (costoParaTrabajar / this.datosForm.materiasInscritas * beca.matMax * beca.porcentajes[0] / 100);
+          costoParaTrabajar -= (costoParaTrabajar / (this.datosForm.materiasInscritas-this.datosForm.materiasReinscritas) * beca.matMax * beca.porcentajes[0] / 100);
         }
 
         // SI LA BECA APLICA AL SEGURO, SE HACE EL DESCUENTO
@@ -160,7 +159,7 @@ export class MainComponent implements OnInit {
       }
     }
 
-    //AL FINALIZAR, SE GUARDA EL COSTO NETO EN SU VARIABLE Y SE REDONDEA A 3 DECIMALES
+    //AL FINALIZAR, SE GUARDA EL COSTO NETO EN SU VARIABLE
     this.costoNeto = +costoParaTrabajar + +seguroDescontado;
 
     //SI ERA EL PRIMER PAGO O HABIAN MATERIAS REINSCRITAS, SE SUMAN ESOS COSTOS NUEVAMENTE AL COSTO NETO
@@ -179,16 +178,35 @@ export class MainComponent implements OnInit {
     }
 
     //SE REGISTRA EL EVENTO DE MOSTRAR RESULTADOS EN ANALYTICS
-    // this.analytics.logEvent('Mostrar Resultados', {
+    // this.analytics.logEvent('Resultados', {
     //   Materias: this.datosForm.materiasInscritas,
     //   Reinscritas: this.datosForm.materiasReinscritas,
-    //   Costo_Materia: this.datosForm.valorMateria,
-    //   Costo_Inscripcion: this.datosForm.valorInscripcion,
-    //   Costo_Seguro: this.datosForm.valorSeguro,
+    //   Costo_Materia: this.parametros.asignaturaPre,
+    //   Costo_Inscripcion: this.parametros.inscripcionPre,
+    //   Costo_Seguro: this.parametros.seguroPre,
     //   Costo_Bruto: this.costoBruto,
     //   Costo_Neto: this.costoNeto,
     //   Becas: this.generarStringBecas()
     // });
+    console.log('Resultados', {
+      Materias: this.datosForm.materiasInscritas,
+      Reinscritas: this.datosForm.materiasReinscritas,
+      Costo_Materia: this.parametros.asignaturaPre,
+      Costo_Inscripcion: this.parametros.inscripcionPre,
+      Costo_Seguro: this.parametros.seguroPre,
+      Costo_Bruto: this.costoBruto,
+      Costo_Neto: this.costoNeto,
+      Total_Descuento: parseFloat((this.costoBruto - this.costoNeto).toFixed(2)),
+      Becas: this.generarStringBecas()
+    });
+  }
+
+  generarStringBecas():string {
+    let becasString:string = '';
+    this.becasListas.forEach(beca => {
+      becasString = becasString + beca.nombre + '(' + beca.porcentajes[0] + '%),' + " ";
+    });
+    return becasString;
   }
 
 }

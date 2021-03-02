@@ -23,6 +23,7 @@ export class ParametrosComponent implements OnInit {
       this.parametros = params;
       this.paramsLoaded = true;
       this.fechaActual = new Date();
+      // PROBLEMA CON FECHAPLACEHOLDER
       this.fechaMin = this.fechaActual.toISOString().substring(0, 16);
       this.fechaMax = new Date(this.fechaActual.getTime() + 31536000000).toISOString().substring(0, 16);
       this.fechaPlaceholder = new Date(this.parametros.fechaVencimiento).toISOString().substring(0, 16);
