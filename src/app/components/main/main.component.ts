@@ -104,23 +104,17 @@ export class MainComponent implements OnInit {
   calcularCostoNeto() {
     let inscripcionDescontada: number = this.parametros.inscripcionPre;
     let seguroDescontado: number = this.parametros.seguroPre;
-    let costoParaTrabajar: number = this.costoBruto - this.parametros.seguroPre;
     let becasParaTrabajar: Beca[];
 
     becasParaTrabajar = this.becasListas.map(a => Object.assign({}, a));
     // becasParaTrabajar = this.becasListas.map(a => ({...a}));
 
     //SI HAY MATERIAS REINSCRITAS, QUITARLAS DEL MONTO A TRABAJAR
-    if(this.datosForm.reinscritas == true) {
-      costoParaTrabajar -= (this.datosForm.materiasReinscritas * this.parametros.asignaturaPre);
-    }else {
+    if(this.datosForm.reinscritas == false) {
       this.datosForm.materiasReinscritas = 0;
     }
 
-    //SI ES EL PRIMER PAGO, QUITAR INSCRIPCION DEL MONTO A TRABAJAR
-    if(this.datosForm.primerPago == true) {
-      costoParaTrabajar -= this.parametros.inscripcionPre;
-    }
+    let costoParaTrabajar = this.parametros.asignaturaPre * (this.datosForm.materiasInscritas - this.datosForm.materiasReinscritas);
 
     // SE COLOCAN LOS DESCUENTOS POR UC DE PRIMEROS
     becasParaTrabajar.forEach((beca, index) =>
@@ -131,16 +125,18 @@ export class MainComponent implements OnInit {
     // PARA CADA BECA...
     for(let beca of becasParaTrabajar) {
 
+      // SI EL DESCUENTTO ES POR UNIDADES DE CREDITO SE APLICA DE ESA MANERA
       if(beca.porcentajes[0].includes("UC")){
         costoParaTrabajar -= (beca.porcentajes[0].replace('UC', '') * (this.parametros.asignaturaPre / 3));
       }
-
+      // DE LO CONTRARIO...
       else{
+
         //SI NO APLICAN MATERIAS MAXIMAS, SE APLICA EL DESCUENTO DE FORMA NORMAL
         if(beca.matMax == 0 || beca.matMax >= (this.datosForm.materiasInscritas-this.datosForm.materiasReinscritas)) {
           costoParaTrabajar -= (costoParaTrabajar * beca.porcentajes[0] / 100);
 
-        //SI APLICAN MATERIAS MAXIMAS, SE DIVIDE EL MONTO ACTUAL ENTRE EL NUMERO DE MATERIAS INSCRITAS,
+        //SI APLICAN MATERIAS MAXIMAS, SE DIVIDE EL MONTO ACTUAL ENTRE EL NUMERO DE MATERIAS INSCRITAS (SIN CONTAR REINSCRITAS),
         // LUEGO ESO SE MULTIPLICA POR EL NUMERO DE MATERIAS QUE CUBRE LA BECA Y SE USA ESE MONTO PARA CALCULAR EL DESCUENTO
         }else if(beca.matMax < (this.datosForm.materiasInscritas-this.datosForm.materiasReinscritas)) {
           costoParaTrabajar -= (costoParaTrabajar / (this.datosForm.materiasInscritas-this.datosForm.materiasReinscritas) * beca.matMax * beca.porcentajes[0] / 100);
@@ -160,14 +156,11 @@ export class MainComponent implements OnInit {
     }
 
     //AL FINALIZAR, SE GUARDA EL COSTO NETO EN SU VARIABLE
-    this.costoNeto = +costoParaTrabajar + +seguroDescontado;
+    this.costoNeto = +costoParaTrabajar + +seguroDescontado + (this.datosForm.materiasReinscritas * this.parametros.asignaturaPre);
 
     //SI ERA EL PRIMER PAGO O HABIAN MATERIAS REINSCRITAS, SE SUMAN ESOS COSTOS NUEVAMENTE AL COSTO NETO
     if(this.datosForm.primerPago == true) {
       this.costoNeto += +inscripcionDescontada;
-    }
-    if(this.datosForm.reinscritas == true) {
-      this.costoNeto += (this.datosForm.materiasReinscritas * this.parametros.asignaturaPre);
     }
 
     //SE REDONDEA EL COSTO NETO A 2 DECIMALES
