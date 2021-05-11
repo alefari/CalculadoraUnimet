@@ -8,13 +8,13 @@
     <div class="modal-body">
       <div *ngIf="paramsLoaded">
       <div class="row">
-        <div class="col">
+        <div class="col-lg-6 col-sm-12">
           <div class="form-floating mb-3">
             <input [(ngModel)]="parametros.tasa" name="tasa" type="number" class="form-control" id="floatingInput" placeholder="">
             <label for="floatingInput">Tasa de cambio (Bs/$)</label>
           </div>
         </div>
-        <div class="col">
+        <div class="col-lg-6 col-sm-12">
           <div class="form-floating mb-3">
             <input type="datetime-local" [(ngModel)]='fechaPlaceholder' name="fechaVencimiento"
               value="2018-07-22" [min]="fechaMin" [max]="fechaMax" class="form-control" id="floatingInput">
@@ -25,28 +25,36 @@
       </div>
       <a target="_blank" href="http://www.bcv.org.ve/">Click para acceder a la web del BCV</a>
       <hr>
+      <p>NOTA: Utilizar punto <strong>(.)</strong> para los decimales y <strong>no</strong> colocar separadores de miles.</p>
       <div class="row">
-        <div class="col">
+        <div class="col-lg-6 col-sm-12">
           <h5 class="mb-3">Pregrado</h5>
           <div class="form-floating mb-3">
             <input [(ngModel)]="parametros.asignaturaPre" name="asignaturaPre" type="number" class="form-control" id="floatingInput" placeholder="name@example.com">
             <label for="floatingInput">Costo de la asignatura en $(mensual)</label>
           </div>
           <div class="form-floating mb-3">
-            <input [(ngModel)]="parametros.inscripcionPre" name="inscripcionPre" type="number" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <input [(ngModel)]="parametros.inscripcionPre" name="inscripcionPre" type="number" class="form-control" placeholder="name@example.com">
             <label for="floatingInput">Costo de la inscripción en $</label>
           </div>
           <div class="form-floating mb-3">
-            <input [(ngModel)]="parametros.seguroPre" name="seguro" type="number" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <input [(ngModel)]="parametros.seguroPre" name="seguro" type="number" class="form-control" placeholder="name@example.com">
             <label for="floatingInput">Costo del seguro en $ (mensual)</label>
           </div>
         </div>
-        <div class="col">
-          <h5>Postgrado</h5>
-          <p>Próximamente</p>
+        <div class="col-lg-6 col-sm-12">
+          <h5 class="mb-3">Postgrado</h5>
+          <p>En desarrollo...</p>
+          <div class="form-floating mb-3">
+            <input disabled [(ngModel)]="parametros.asignaturaPos" name="asignaturaPos" type="number" class="form-control" placeholder="name@example.com">
+            <label for="floatingInput">Costo de la asignatura en $(mensual)</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input disabled [(ngModel)]="parametros.inscripcionPos" name="inscripcionPos" type="number" class="form-control" placeholder="name@example.com">
+            <label for="floatingInput">Costo de la inscripción en $</label>
+          </div>
         </div>
       </div>
-      <p>NOTA: Utilizar punto (.) para los decimales, no colocar separadores de miles.</p>
       </div>
     </div>
     <div class="modal-footer">
