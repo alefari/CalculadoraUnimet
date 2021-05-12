@@ -1,5 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Usuario } from 'src/app/models/usuario.model';
+import { AuthService } from 'src/app/services/auth.service';
 import { ParametrosService, Params } from 'src/app/services/parametros.service';
 
 @Component({
@@ -15,8 +17,9 @@ export class ParametrosComponent implements OnInit {
   fechaMin:string;
   fechaMax:string;
   fechaPlaceholder:string;
+  usuarioActual: Usuario;
 
-  constructor(private servicioParametros: ParametrosService) { }
+  constructor(private servicioParametros: ParametrosService, private auth: AuthService) { }
 
   ngOnInit(): void {
     this.servicioParametros.obtenerParametros().subscribe(params => {
@@ -27,6 +30,9 @@ export class ParametrosComponent implements OnInit {
       this.fechaMin = this.fechaActual.toISOString().substring(0, 16);
       this.fechaMax = new Date(this.fechaActual.getTime() + 31536000000).toISOString().substring(0, 16);
       this.fechaPlaceholder = new Date(this.parametros.fechaVencimiento).toISOString().substring(0, 16);
+    })
+    this.auth.usuario$.subscribe(usuario => {
+      this.usuarioActual = usuario;
     })
 
     // this.fechaMin = this.fechaActual.toISOString().split('.')[0];
@@ -40,6 +46,7 @@ export class ParametrosComponent implements OnInit {
   onSubmit() {
     this.parametros.fechaVencimiento = new Date(this.form.value.fechaVencimiento).getTime();
     this.parametros.fechaIngreso = new Date().getTime();
+    this.parametros.ultimaActualizacion = this.usuarioActual.displayName;
     this.servicioParametros.update(this.parametros);
   }
 

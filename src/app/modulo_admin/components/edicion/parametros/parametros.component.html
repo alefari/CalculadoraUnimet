@@ -7,6 +7,7 @@
     <form #f="ngForm">
     <div class="modal-body">
       <div *ngIf="paramsLoaded">
+        <p>Última modificación el <strong>{{parametros.fechaIngreso | date:'d/M/YY - hh:mm aaa'}}</strong> por <strong>{{parametros.ultimaActualizacion}}</strong></p>
       <div class="row">
         <div class="col-lg-6 col-sm-12">
           <div class="form-floating mb-3">
@@ -46,11 +47,11 @@
           <h5 class="mb-3">Postgrado</h5>
           <p>En desarrollo...</p>
           <div class="form-floating mb-3">
-            <input disabled [(ngModel)]="parametros.asignaturaPos" name="asignaturaPos" type="number" class="form-control" placeholder="name@example.com">
+            <input [(ngModel)]="parametros.asignaturaPos" name="asignaturaPos" type="number" class="form-control" placeholder="name@example.com">
             <label for="floatingInput">Costo de la asignatura en $(mensual)</label>
           </div>
           <div class="form-floating mb-3">
-            <input disabled [(ngModel)]="parametros.inscripcionPos" name="inscripcionPos" type="number" class="form-control" placeholder="name@example.com">
+            <input [(ngModel)]="parametros.inscripcionPos" name="inscripcionPos" type="number" class="form-control" placeholder="name@example.com">
             <label for="floatingInput">Costo de la inscripción en $</label>
           </div>
         </div>
