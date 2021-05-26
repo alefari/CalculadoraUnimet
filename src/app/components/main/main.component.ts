@@ -125,7 +125,7 @@ export class MainComponent implements OnInit {
     // PARA CADA BECA...
     for(let beca of becasParaTrabajar) {
 
-      // SI EL DESCUENTTO ES POR UNIDADES DE CREDITO SE APLICA DE ESA MANERA
+      // SI EL DESCUENTO ES POR UNIDADES DE CREDITO SE APLICA DE ESA MANERA
       if(beca.porcentajes[0].includes("UC")){
         costoParaTrabajar -= (beca.porcentajes[0].replace('UC', '') * (this.parametros.asignaturaPre / 3));
       }
@@ -144,12 +144,14 @@ export class MainComponent implements OnInit {
 
         // SI LA BECA APLICA AL SEGURO, SE HACE EL DESCUENTO
         if(beca.aplicaSeguro == true) {
-          seguroDescontado -= (seguroDescontado * beca.porcentajes[0] / 100);
+          // seguroDescontado -= (seguroDescontado * beca.porcentajes[0] / 100);
+          seguroDescontado = 0;
         }
 
         //SI LA BECA APLICA A LA INSCRIPCION, Y ES EL PRIMER PAGO SE HACE EL DESCUENTO
         if(beca.aplicaInscripcion == true && this.datosForm.primerPago == true) {
-          inscripcionDescontada -= (inscripcionDescontada * beca.porcentajes[0] / 100);
+          // inscripcionDescontada -= (inscripcionDescontada * beca.porcentajes[0] / 100);
+          inscripcionDescontada = 0;
         }
 
       }
@@ -158,7 +160,7 @@ export class MainComponent implements OnInit {
     //AL FINALIZAR, SE GUARDA EL COSTO NETO EN SU VARIABLE
     this.costoNeto = +costoParaTrabajar + +seguroDescontado + (this.datosForm.materiasReinscritas * this.parametros.asignaturaPre);
 
-    //SI ERA EL PRIMER PAGO O HABIAN MATERIAS REINSCRITAS, SE SUMAN ESOS COSTOS NUEVAMENTE AL COSTO NETO
+    //SI ERA EL PRIMER PAGO, SE SUMA ESE COSTO NUEVAMENTE AL COSTO NETO
     if(this.datosForm.primerPago == true) {
       this.costoNeto += +inscripcionDescontada;
     }
